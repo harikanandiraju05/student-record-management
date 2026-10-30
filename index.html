@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Record Management System | DS Project</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <div class="brand"><span>⌘</span> Student<span>DS</span></div>
+    <div class="navlinks">
+      <a href="#home">Home</a><a href="#manager">Manager</a><a href="#algorithm">Algorithm</a>
+      <a href="#code">C Code</a><a href="#demo">Demo</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div class="hero-copy">
+    <div class="badge">DATA STRUCTURES • SINGLY LINKED LIST</div>
+    <h1>Student Record<br><span>Management System</span></h1>
+    <p>A professional interactive demonstration of student records implemented using a singly linked list in C.</p>
+    <div class="hero-actions"><a class="btn primary" href="#manager">Launch Manager →</a><a class="btn ghost" href="#code">View C Source</a></div>
+  </div>
+  <div class="hero-card">
+    <div class="mini-title">LIVE STRUCTURE</div>
+    <div class="chain"><div class="node"><b>HEAD</b><small>pointer</small></div><i>→</i><div class="node"><b>101</b><small>Harika · 85</small></div><i>→</i><div class="node"><b>102</b><small>Ravi · 78</small></div><i>→</i><div class="null">NULL</div></div>
+  </div>
+</section>
+
+<section id="manager" class="section">
+  <div class="section-head"><div><div class="eyebrow">INTERACTIVE DEMO</div><h2>Linked List Manager</h2></div><div class="pill">● Live</div></div>
+  <div class="manager-grid">
+    <div class="panel form-panel">
+      <h3>Add Student</h3><p class="muted">Create a new node in the singly linked list.</p>
+      <label>Registration Number<input id="reg" type="number" placeholder="e.g. 101"></label>
+      <label>Student Name<input id="name" type="text" placeholder="e.g. Harika"></label>
+      <label>Marks<input id="marks" type="number" min="0" max="100" step="0.01" placeholder="e.g. 85"></label>
+      <button class="btn primary full" onclick="addStudent()">＋ Add Student</button>
+      <div id="message" class="message"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-top"><div><h3>Search / Delete</h3><p class="muted">Use registration number.</p></div></div>
+      <div class="inline"><input id="actionReg" type="number" placeholder="Registration number"><button class="btn dark" onclick="searchStudent()">Search</button><button class="btn danger" onclick="deleteStudent()">Delete</button></div>
+      <div id="searchResult" class="result empty">Search results will appear here.</div>
+      <div class="panel-top records-title"><h3>All Student Records</h3><span id="count" class="count">0 records</span></div>
+      <div id="records" class="records"></div>
+    </div>
+  </div>
+</section>
+
+<section id="algorithm" class="section light">
+  <div class="eyebrow">SUBMISSION MATERIAL</div><h2>Algorithms</h2>
+  <div class="algo-grid">
+    <article><span>01</span><h3>Add Student</h3><ol><li>Create a new node using <code>malloc()</code>.</li><li>Read registration number, name and marks.</li><li>Set <code>next = NULL</code>.</li><li>If the list is empty, make it the head.</li><li>Otherwise traverse to the last node and link the new node.</li></ol></article>
+    <article><span>02</span><h3>Search Student</h3><ol><li>Start from the head node.</li><li>Compare each node's registration number.</li><li>If matched, display the record.</li><li>Move to <code>next</code> until the list ends.</li><li>If no match is found, report not found.</li></ol></article>
+    <article><span>03</span><h3>Delete Student</h3><ol><li>Traverse while keeping current and previous nodes.</li><li>Find the node with the given registration number.</li><li>Change the previous node's <code>next</code> pointer.</li><li>If deleting the first node, update <code>head</code>.</li><li>Free the deleted node.</li></ol></article>
+    <article><span>04</span><h3>Display Records</h3><ol><li>Start at <code>head</code>.</li><li>Visit each node sequentially.</li><li>Print registration number, name and marks.</li><li>Follow the <code>next</code> pointer.</li><li>Stop when the pointer becomes <code>NULL</code>.</li></ol></article>
+  </div>
+</section>
+
+<section id="code" class="section">
+  <div class="section-head"><div><div class="eyebrow">C IMPLEMENTATION</div><h2>Source Code</h2></div><button class="btn ghost" onclick="copyCode()">Copy Code</button></div>
+  <pre id="codeBox"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+struct Student {
+    int regNo;
+    char name[50];
+    float marks;
+    struct Student *next;
+};
+
+struct Student *head = NULL;
+
+void addStudent() {
+    struct Student *newNode = malloc(sizeof(struct Student));
+
+    printf("Enter Registration Number: ");
+    scanf("%d", &newNode-&gt;regNo);
+
+    printf("Enter Name: ");
+    scanf(" %[^\n]", newNode-&gt;name);
+
+    printf("Enter Marks: ");
+    scanf("%f", &newNode-&gt;marks);
+
+    newNode-&gt;next = NULL;
+
+    if (head == NULL)
+        head = newNode;
+    else {
+        struct Student *temp = head;
+        while (temp-&gt;next != NULL)
+            temp = temp-&gt;next;
+        temp-&gt;next = newNode;
+    }
+
+    printf("Student record added successfully!\n");
+}
+
+void searchStudent() {
+    int regNo;
+    printf("Enter Registration Number to search: ");
+    scanf("%d", &regNo);
+
+    struct Student *temp = head;
+    while (temp != NULL) {
+        if (temp-&gt;regNo == regNo) {
+            printf("Student Found!\n");
+            printf("Registration Number: %d\n", temp-&gt;regNo);
+            printf("Name: %s\n", temp-&gt;name);
+            printf("Marks: %.2f\n", temp-&gt;marks);
+            return;
+        }
+        temp = temp-&gt;next;
+    }
+    printf("Student record not found.\n");
+}
+
+void deleteStudent() {
+    int regNo;
+    printf("Enter Registration Number to delete: ");
+    scanf("%d", &regNo);
+
+    struct Student *temp = head, *prev = NULL;
+
+    while (temp != NULL && temp-&gt;regNo != regNo) {
+        prev = temp;
+        temp = temp-&gt;next;
+    }
+
+    if (temp == NULL) {
+        printf("Student record not found.\n");
+        return;
+    }
+
+    if (prev == NULL)
+        head = temp-&gt;next;
+    else
+        prev-&gt;next = temp-&gt;next;
+
+    free(temp);
+    printf("Student record deleted successfully!\n");
+}
+
+void displayStudents() {
+    struct Student *temp = head;
+
+    if (head == NULL) {
+        printf("No student records available.\n");
+        return;
+    }
+
+    while (temp != NULL) {
+        printf("Reg No: %d | Name: %s | Marks: %.2f\n",
+               temp-&gt;regNo, temp-&gt;name, temp-&gt;marks);
+        temp = temp-&gt;next;
+    }
+}
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n===== Student Record Management System =====\n");
+        printf("1. Add Student\n2. Search Student\n3. Delete Student\n");
+        printf("4. Display Students\n5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: addStudent(); break;
+            case 2: searchStudent(); break;
+            case 3: deleteStudent(); break;
+            case 4: displayStudents(); break;
+            case 5: exit(0);
+            default: printf("Invalid choice! Try again.\n");
+        }
+    }
+    return 0;
+}</code></pre>
+</section>
+
+<section id="demo" class="section light">
+  <div class="eyebrow">VIVA READY</div><h2>Short Demonstration & Explanation</h2>
+  <div class="demo-grid">
+    <div class="demo-card"><b>What is a singly linked list?</b><p>A linear data structure where every node stores data and a pointer to the next node.</p></div>
+    <div class="demo-card"><b>Why use it here?</b><p>Student records can be added or deleted dynamically without requiring a fixed-size array.</p></div>
+    <div class="demo-card"><b>What is a node?</b><p>Each node contains registration number, name, marks and a pointer to the next student.</p></div>
+    <div class="demo-card"><b>Complexity</b><p>Add at end: O(n) · Search: O(n) · Delete: O(n) · Display: O(n).</p></div>
+  </div>
+  <div class="sample"><h3>Sample Input / Output</h3><pre>===== Student Record Management System =====
+1. Add Student
+2. Search Student
+3. Delete Student
+4. Display Students
+5. Exit
+Enter your choice: 1
+Enter Registration Number: 101
+Enter Name: Harika
+Enter Marks: 85
+Student record added successfully!</pre></div>
+</section>
+</main>
+
+<footer><b>StudentDS</b> · Data Structures Mini Project · Singly Linked List <span>Built for academic demonstration</span></footer>
+<script src="script.js"></script>
+</body>
+</html>
